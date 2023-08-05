@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>To Do List</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h2>TODO LIST</h2>
+      <h3>ADD ITEM</h3>
+      <form class="new-task-form">
+        <div class="input-container">
+          <input class="new-task-title" type="text" />
+          <button type="submit" class="btn-add">Add</button>
+        </div>
+        <textarea
+          name=""
+          class="new-task-content"
+          cols="30"
+          rows="10"
+        ></textarea>
+      </form>
+      <h3>TODO</h3>
+      <ul id="ul-todo-list"></ul>
+      <h3>COMPLETED</h3>
+      <ul id="ul-completed-list"></ul>
+    </div>
+
+    <!-- <div class="practice">
+      <ul>
+        <li class="li-todo-list">
+          <input type="checkbox" name="" id="todo-check" />
+          <p>Pay Bills</p>
+          <button class="edit">Edit</button>
+          <button class="Delete">Delete</button>
+        </li>
+      </ul>
+    </div> -->
+
+    <script src="script.js"></script>
+  </body>
+</html>
