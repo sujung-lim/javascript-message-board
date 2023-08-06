@@ -6,13 +6,10 @@ h3 {
   border-bottom: 2px solid #333;
 }
 
-.practice ul {
-  padding: 0;
-}
-
-#li-todo-list {
+.input-container {
   display: flex;
-  list-style: none;
+  justify-content: space-between;
+  width: 50%;
 }
 
 .input-container input,
@@ -20,13 +17,13 @@ h3 {
   display: block;
 }
 
-.input-container {
+#li-todo-list {
   display: flex;
-  justify-content: space-between;
-  width: 50%;
+  list-style: none;
+  gap: 10px;
 }
 
-input.new-task-title {
+.new-task-title {
   width: 70%;
 }
 
@@ -34,4 +31,8 @@ input.new-task-title {
   width: 50%;
   display: block;
   margin-top: 10px;
+}
+
+.todo-content {
+  display: block;
 }
