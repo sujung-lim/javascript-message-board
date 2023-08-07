@@ -8,24 +8,35 @@
   </head>
   <body>
     <div class="container">
-      <h2>TODO LIST</h2>
-      <h3>ADD ITEM</h3>
-      <form class="new-task-form">
-        <div class="input-container">
-          <input class="new-task-title" type="text" />
-          <button type="submit" class="btn-add">Add</button>
+      <h2>게시판</h2>
+      <h3>글쓰기</h3>
+      <form class="new-message-form">
+        <div class="writer-container">
+          <label for="new-message-writer">작성자</label>
+          <input
+            class="new-message-writer"
+            type="text"
+            id="new-message-writer"
+          />
         </div>
-        <textarea
-          name=""
-          class="new-task-content"
-          cols="30"
-          rows="10"
-        ></textarea>
+        <div class="title-container">
+          <label for="new-message-title">제목</label>
+          <input class="new-message-title" type="text" id="new-message-title" />
+        </div>
+        <div class="content-container">
+          <label for="new-message-content">내용</label>
+          <textarea
+            name=""
+            class="new-message-content"
+            id="new-message-content"
+            cols="30"
+            rows="10"
+          ></textarea>
+        </div>
+        <button type="submit" class="btn-post">Post</button>
       </form>
-      <h3>TODO</h3>
-      <ul id="ul-todo-list"></ul>
-      <h3>COMPLETED</h3>
-      <ul id="ul-completed-list"></ul>
+      <h3>포스팅</h3>
+      <ul id="ul-message-list"></ul>
     </div>
 
     <!-- <div class="practice">

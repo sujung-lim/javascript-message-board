@@ -6,33 +6,6 @@ h3 {
   border-bottom: 2px solid #333;
 }
 
-.input-container {
+.li-message-list {
   display: flex;
-  justify-content: space-between;
-  width: 50%;
-}
-
-.input-container input,
-.input-container button {
-  display: block;
-}
-
-#li-todo-list {
-  display: flex;
-  list-style: none;
-  gap: 10px;
-}
-
-.new-task-title {
-  width: 70%;
-}
-
-.new-task-content {
-  width: 50%;
-  display: block;
-  margin-top: 10px;
-}
-
-.todo-content {
-  display: block;
 }
