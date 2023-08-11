@@ -1,6 +1,17 @@
+:root {
+  --main-color: #00c73c;
+}
+
 .qa-section p {
   color: #8f8f8f;
 }
+
+.qa-menu-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+/* 왼쪽 버튼 */
 
 .qa-section a {
   text-decoration: none;
@@ -21,6 +32,104 @@
 
 .search-qa {
   background-color: #999;
+}
+
+/* 오른쪽 버튼 */
+/* 온앤오프 버튼 */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: '';
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+
+input:checked + .slider {
+  background-color: var(--main-color);
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px var(--main-color);
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* 동그라미 슬라이드 버튼 */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+/* 답변상태 옵션 */
+#answer-status {
+  padding: 10px;
+  border: 1px solid #ebebeb;
+}
+
+/* 게시판 목록 */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  font-size: 12px;
+}
+
+.tr-head th {
+  padding: 10px;
+  border-top: 3px solid #000;
+  border-bottom: 1px solid #ebebeb;
+}
+
+.th-status {
+  width: 10%;
+}
+
+.th-title {
+  width: 70%;
+}
+
+.th-writer {
+  width: 10%;
+}
+
+.th-date {
+  width: 10%;
 }
 
 /* 모달 창  */
@@ -90,7 +199,7 @@
 }
 
 .submit-btn {
-  background-color: #00c73c;
+  background-color: var(--main-color);
   color: #fff;
   border: none;
 }

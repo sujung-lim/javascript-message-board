@@ -14,8 +14,35 @@
         구매하시려는 상품에 대해 궁금한 점이 있으신 경우 문의해주세요. '판매자
         톡톡문의'를 통해 판매자와 간편하게 1:1 상담도 가능합니다.
       </p>
-      <a href="" class="open-qa-modal">상품 Q&A 작성하기</a>
-      <a href="" class="search-qa">나의 Q&A 조회 ></a>
+      <div class="qa-menu-container">
+        <div class="qa-btn">
+          <a href="" class="open-qa-modal">상품 Q&A 작성하기</a>
+          <a href="" class="search-qa">나의 Q&A 조회 ></a>
+        </div>
+        <div class="qa-status">
+          <label class="switch">
+            <input type="checkbox" />
+            <span class="slider round"></span>
+          </label>
+          <select name="status" id="answer-status">
+            <option value="answer-status">답변상태</option>
+            <option value="no-answer">미답변</option>
+            <option value="completed-answer">답변완료</option>
+          </select>
+        </div>
+      </div>
+      <table>
+        <thead>
+          <tr class="tr-head">
+            <th class="th-status">답변상태</th>
+            <th class="th-title">제목</th>
+            <th class="th-writer">작성자</th>
+            <th class="th-date">작성일</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+
       <!-- 모달 창 (기본적으로 숨김) -->
       <div class="qa-modal" id="qa-modal" style="display: none">
         <div class="qa-modal-content">
