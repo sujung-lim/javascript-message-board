@@ -1,55 +1,55 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>To Do List</title>
     <link rel="stylesheet" href="style.css" />
+    <title>Q&A Section</title>
+    <!-- CSS 및 JS 파일 링크 추가 (필요한 외부 라이브러리 포함) -->
   </head>
   <body>
-    <div class="container">
-      <h2>게시판</h2>
-      <h3>글쓰기</h3>
-      <form class="new-message-form">
-        <div class="writer-container">
-          <label for="new-message-writer">작성자</label>
-          <input
-            class="new-message-writer"
-            type="text"
-            id="new-message-writer"
-          />
+    <section class="qa-section">
+      <h1>Q&A</h1>
+      <p>
+        구매하시려는 상품에 대해 궁금한 점이 있으신 경우 문의해주세요. '판매자
+        톡톡문의'를 통해 판매자와 간편하게 1:1 상담도 가능합니다.
+      </p>
+      <a href="" class="open-qa-modal">상품 Q&A 작성하기</a>
+      <a href="" class="search-qa">나의 Q&A 조회 ></a>
+      <!-- 모달 창 (기본적으로 숨김) -->
+      <div class="qa-modal" id="qa-modal" style="display: none">
+        <div class="qa-modal-content">
+          <h2 class="modal-h2">상품 Q&A 작성하기</h2>
+          <form class="qa-form">
+            <div class="textarea-container">
+              <textarea
+                name="question"
+                id="qa-textarea"
+                cols="30"
+                rows="10"
+                placeholder="문의하실 내용을 입력하세요"
+              ></textarea>
+            </div>
+            <ul class="checkbox-list">
+              <li class="checkbox-item"><input type="checkbox" /> 비공개</li>
+              <li class="checkbox-item">
+                <input type="checkbox" /> 톡톡/알림으로 답변받기
+              </li>
+            </ul>
+            <div class="separator"></div>
+            <div class="btn-container">
+              <button type="button" class="close-modal-btn">취소</button>
+              <button type="submit" class="submit-btn">등록</button>
+            </div>
+          </form>
         </div>
-        <div class="title-container">
-          <label for="new-message-title">제목</label>
-          <input class="new-message-title" type="text" id="new-message-title" />
-        </div>
-        <div class="content-container">
-          <label for="new-message-content">내용</label>
-          <textarea
-            name=""
-            class="new-message-content"
-            id="new-message-content"
-            cols="30"
-            rows="10"
-          ></textarea>
-        </div>
-        <button type="submit" class="btn-post">Post</button>
-      </form>
-      <h3>포스팅</h3>
-      <ul id="ul-message-list"></ul>
-    </div>
+      </div>
+      <!-- 질문 및 답변 목록 -->
+      <div class="qa-list">
+        <!-- 질문 및 답변 목록이 추가될 위치입니다. -->
+      </div>
+    </section>
 
-    <!-- <div class="practice">
-      <ul>
-        <li class="li-todo-list">
-          <input type="checkbox" name="" id="todo-check" />
-          <p>Pay Bills</p>
-          <button class="edit">Edit</button>
-          <button class="Delete">Delete</button>
-        </li>
-      </ul>
-    </div> -->
-
-    <script src="script.js"></script>
+    <!-- JavaScript 코드 추가 -->
   </body>
 </html>
