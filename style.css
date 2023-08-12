@@ -109,7 +109,7 @@ input:checked + .slider:before {
   border: 1px solid #ebebeb;
 }
 
-/* 게시판 목록 */
+/* 게시판 테이블 */
 table {
   width: 100%;
   border-collapse: collapse;
@@ -117,13 +117,17 @@ table {
   font-size: 12px;
 }
 
+/* 게시판 테이블 헤드 */
+
 .tr-head th {
   padding: 10px;
   border-top: 3px solid #000;
   border-bottom: 1px solid #ebebeb;
 }
 
-.th-status {
+.th-status,
+.th-writer,
+.th-date {
   width: 10%;
 }
 
@@ -131,12 +135,13 @@ table {
   width: 70%;
 }
 
-.th-writer {
-  width: 10%;
+/* 게시판 테이블 바디 */
+.table-body tr td {
+  padding: 10px;
 }
 
-.th-date {
-  width: 10%;
+.table-body tr td:not(:nth-child(2)) {
+  text-align: center;
 }
 
 /* 모달 창  */
@@ -171,13 +176,15 @@ table {
   padding: 30px;
 }
 
-.qa-title-container {
+.qa-title-container,
+.qa-writer-container {
   padding: 18px;
   margin-bottom: 10px;
   border: 1px solid #cfcfcf;
 }
 
-.qa-title {
+.qa-title,
+.qa-writer {
   border: none;
   width: 100%;
 }
@@ -190,6 +197,11 @@ table {
 #qa-content {
   border: none;
   width: 100%;
+}
+
+.qa-content-tr {
+  border-top: 1px solid #eaeced;
+  background-color: #f7f8fa;
 }
 
 .checkbox-list {

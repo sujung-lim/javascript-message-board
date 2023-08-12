@@ -16,8 +16,10 @@ closeModal.addEventListener('click', () => {
 
 function modalOpen(flag) {
   const qaTitle = document.querySelector('input.qa-title');
+  const qaWriter = document.querySelector('.qa-writer');
   const qaContent = document.querySelector('#qa-content');
   qaTitle.value = '';
+  qaWriter.value = '';
   qaContent.value = '';
   if (flag == 'open') modal.style.display = 'block';
   else modal.style.display = 'none';
@@ -28,14 +30,16 @@ const submitBtn = document.querySelector('.submit-btn');
 
 submitBtn.addEventListener('click', e => {
   e.preventDefault();
-  // 제목, 내용 값 저장
-  const qaTitle = document.querySelector('input.qa-title').value;
+  // 제목, 작성자, 내용 값 저장
+  const qaTitle = document.querySelector('.qa-title').value;
+  const qaWriter = document.querySelector('.qa-writer').value;
   const qaContent = document.querySelector('#qa-content').value;
 
   // 게시판 리스트 생성
   const tr = document.createElement('tr');
   const tbody = document.querySelector('.table-body');
-  tbody.appendChild(tr);
+  const firstChild = tbody.childNodes[0];
+  tbody.insertBefore(tr, firstChild);
 
   // 상태 td 생성
   const tdStatus = document.createElement('td');
@@ -47,9 +51,46 @@ submitBtn.addEventListener('click', e => {
   tdTitle.innerText = qaTitle;
   tr.appendChild(tdTitle);
 
+  // 토글 변수 추가하여 상태 관리
+  let isContentVisible = false;
+  let contentTr = null;
+
+  // 제목 클릭시 문의 내용 보여주기
+  tdTitle.addEventListener('click', () => {
+    if (!isContentVisible) {
+      // 내용이 보이지 않을 때는 내용을 보여줌
+      contentTr = document.createElement('tr');
+      tr.insertAdjacentElement('afterend', contentTr);
+      contentTr.classList.add('qa-content-tr');
+
+      const newTdStatus = document.createElement('td');
+      contentTr.appendChild(newTdStatus);
+
+      const newTdTitle = document.createElement('td');
+      newTdTitle.innerText = qaContent;
+      contentTr.appendChild(newTdTitle);
+
+      const newTdWriter = document.createElement('td');
+      contentTr.appendChild(newTdWriter);
+
+      const newTdDate = document.createElement('td');
+      contentTr.appendChild(newTdDate);
+
+      // 상태 업데이트
+      isContentVisible = true;
+    } else {
+      // 이미 내용이 보일 때는 숨김
+      contentTr.remove();
+      contentTr = null;
+
+      //상태 업데이트
+      isContentVisible = false;
+    }
+  });
+
   // 작성자에 대한 td 생성
   const tdWriter = document.createElement('td');
-  tdWriter.innerText = '익명'; // 실제 작성자 정보로 바꾸어야 함
+  tdWriter.innerText = qaWriter;
   tr.appendChild(tdWriter);
 
   // 작성일에 대한 td 생성
