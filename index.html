@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="style.css" />
-    <title>Q&A Section</title>
+    <title>Q&A 게시판</title>
     <!-- CSS 및 JS 파일 링크 추가 (필요한 외부 라이브러리 포함) -->
   </head>
   <body>
@@ -16,7 +16,7 @@
       </p>
       <div class="qa-menu-container">
         <div class="qa-btn">
-          <a href="" class="open-qa-modal">상품 Q&A 작성하기</a>
+          <a href="#" class="open-qa-modal">상품 Q&A 작성하기</a>
           <a href="" class="search-qa">나의 Q&A 조회 ></a>
         </div>
         <div class="qa-status">
@@ -32,7 +32,7 @@
         </div>
       </div>
       <table>
-        <thead>
+        <thead class="table-head">
           <tr class="tr-head">
             <th class="th-status">답변상태</th>
             <th class="th-title">제목</th>
@@ -40,18 +40,29 @@
             <th class="th-date">작성일</th>
           </tr>
         </thead>
+        <tbody class="table-body">
+          <!-- <tr>
+            <td>dd</td>
+            <td>ef</td>
+            <td>ewe</td>
+            <td>qwe</td>
+          </tr> -->
+        </tbody>
         <tbody></tbody>
       </table>
 
       <!-- 모달 창 (기본적으로 숨김) -->
-      <div class="qa-modal" id="qa-modal" style="display: none">
-        <div class="qa-modal-content">
+      <div class="modal-overlay">
+        <div class="qa-modal" id="qa-modal">
           <h2 class="modal-h2">상품 Q&A 작성하기</h2>
           <form class="qa-form">
-            <div class="textarea-container">
+            <div class="qa-title-container">
+              <input type="text" class="qa-title" placeholder="제목" />
+            </div>
+            <div class="qa-content-container">
               <textarea
                 name="question"
-                id="qa-textarea"
+                id="qa-content"
                 cols="30"
                 rows="10"
                 placeholder="문의하실 내용을 입력하세요"
@@ -78,5 +89,6 @@
     </section>
 
     <!-- JavaScript 코드 추가 -->
+    <script src="script.js"></script>
   </body>
 </html>
