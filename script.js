@@ -4,6 +4,8 @@ const openModal = document.querySelector('.open-qa-modal');
 const modal = document.querySelector('.modal-overlay');
 
 const body = document.body;
+
+// 모달창 열고 닫기
 openModal.addEventListener('click', e => {
   e.preventDefault();
   modalOpen('open');
@@ -25,7 +27,7 @@ function modalOpen(flag) {
   else modal.style.display = 'none';
 }
 
-// 상품 Q&A 작성 내용 저장
+// 내용 입력 후 등록 버튼 누르면 값 저장
 const submitBtn = document.querySelector('.submit-btn');
 
 submitBtn.addEventListener('click', e => {
@@ -35,6 +37,12 @@ submitBtn.addEventListener('click', e => {
   const qaWriter = document.querySelector('.qa-writer').value;
   const qaContent = document.querySelector('#qa-content').value;
 
+  saveData();
+  addContentTable(qaTitle, qaWriter, qaContent);
+  modalOpen('close');
+});
+
+function addContentTable(qaTitle, qaWriter, qaContent) {
   // 게시판 리스트 생성
   const tr = document.createElement('tr');
   const tbody = document.querySelector('.table-body');
@@ -99,5 +107,33 @@ submitBtn.addEventListener('click', e => {
   const formattedDate = currentDate.toISOString().split('T')[0];
   tdDate.innerText = formattedDate;
   tr.appendChild(tdDate);
-  modalOpen('close');
+}
+
+// 입력한 내용 저장
+function saveData() {
+  let oldData = localStorage.getItem('object');
+  let obj = JSON.parse(oldData);
+
+  if (!obj) {
+    obj = [];
+  }
+
+  const qaTitle = document.querySelector('.qa-title').value;
+  const qaWriter = document.querySelector('.qa-writer').value;
+  const qaContent = document.querySelector('#qa-content').value;
+
+  const newObj = { title: qaTitle, writer: qaWriter, content: qaContent };
+  obj.push(newObj);
+  localStorage.setItem('object', JSON.stringify(obj));
+}
+
+// 저장한 내용 브라우저에 유지하기
+window.addEventListener('load', () => {
+  const storedData = JSON.parse(localStorage.getItem('object'));
+
+  if (storedData) {
+    storedData.forEach(data => {
+      addContentTable(data.title, data.writer, data.content);
+    });
+  }
 });
