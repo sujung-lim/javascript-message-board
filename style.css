@@ -4,6 +4,12 @@ h2 {
   margin: 0;
 }
 
+button {
+  border: none;
+  background: none;
+  padding: 0;
+}
+
 :root {
   --main-color: #00c73c;
 }
@@ -142,6 +148,13 @@ table {
 
 .table-body tr td:not(:nth-child(2)) {
   text-align: center;
+}
+
+/* 댓글 입력 */
+.comment-btn {
+  display: block;
+  margin-top: 10px;
+  cursor: pointer;
 }
 
 /* 모달 창  */

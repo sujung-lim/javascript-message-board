@@ -5,6 +5,9 @@ const modal = document.querySelector('.modal-overlay');
 
 const body = document.body;
 
+//{title:"",cont:"", writer:"",status:"",regdate:"",reply:[]}
+//const savedContents = [];
+
 // 모달창 열고 닫기
 openModal.addEventListener('click', e => {
   e.preventDefault();
@@ -30,6 +33,7 @@ function modalOpen(flag) {
 // 내용 입력 후 등록 버튼 누르면 값 저장
 const submitBtn = document.querySelector('.submit-btn');
 
+// 문의 내용 저장
 submitBtn.addEventListener('click', e => {
   e.preventDefault();
   // 제목, 작성자, 내용 값 저장
@@ -38,13 +42,60 @@ submitBtn.addEventListener('click', e => {
   const qaContent = document.querySelector('#qa-content').value;
 
   saveData();
-  addContentTable(qaTitle, qaWriter, qaContent);
+  let idx = getMaxIdx();
+  const currentDate = new Date();
+  const formattedDate = currentDate.toISOString().split('T')[0];
+  addContentTable(idx, qaTitle, qaWriter, qaContent, formattedDate);
   modalOpen('close');
 });
 
-function addContentTable(qaTitle, qaWriter, qaContent) {
+function getMaxIdx() {
+  let oldData = localStorage.getItem('object');
+  let obj = JSON.parse(oldData);
+
+  if (!obj) {
+    return 1;
+  }
+
+  let maxidx = 0;
+  obj.forEach(o => {
+    if (o.idx > maxidx) maxidx = o.idx;
+  });
+  maxidx++;
+  return maxidx;
+}
+
+function addCommnetList(idx, td) {
+  let oldData = localStorage.getItem('object');
+  let obj = JSON.parse(oldData);
+
+  obj.forEach(o => {
+    if (o.idx == idx) {
+      if (o.commentList) {
+        o.commentList.forEach(c => {
+          const commentP = document.createElement('p');
+          const replyIcon = `<svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"/></svg>`;
+          commentP.innerHTML = replyIcon + c;
+          commentP.classList.add('comment-text');
+          td.appendChild(commentP);
+        });
+      }
+    }
+  });
+}
+
+// Q&A 작성하면 테이블 생성
+function addContentTable(idx, qaTitle, qaWriter, qaContent, qaDate) {
+  const qaData = {};
+
+  // 토글 변수 추가하여 상태 관리
+  let isContentVisible = false;
+  let contentTr = null;
+  let isCommentOn = false;
+
   // 게시판 리스트 생성
   const tr = document.createElement('tr');
+  tr.setAttribute('idx', idx);
   const tbody = document.querySelector('.table-body');
   const firstChild = tbody.childNodes[0];
   tbody.insertBefore(tr, firstChild);
@@ -59,9 +110,14 @@ function addContentTable(qaTitle, qaWriter, qaContent) {
   tdTitle.innerText = qaTitle;
   tr.appendChild(tdTitle);
 
-  // 토글 변수 추가하여 상태 관리
-  let isContentVisible = false;
-  let contentTr = null;
+  // 댓글 달기 버튼
+  const commentBtn = document.createElement('button');
+  commentBtn.innerText = '댓글 달기';
+  commentBtn.classList.add('comment-btn');
+
+  // 댓글 입력창
+  const commentInput = document.createElement('textarea');
+  commentInput.placeholder = '댓글을 입력하세요';
 
   // 제목 클릭시 문의 내용 보여주기
   tdTitle.addEventListener('click', () => {
@@ -84,6 +140,50 @@ function addContentTable(qaTitle, qaWriter, qaContent) {
       const newTdDate = document.createElement('td');
       contentTr.appendChild(newTdDate);
 
+      //댓글리스트
+      addCommnetList(idx, newTdTitle);
+
+      // 댓글 달기 버튼 보여주기
+      newTdTitle.appendChild(commentBtn);
+
+      // 댓글 달기 누르면 댓글 입력창 보여주기
+      commentBtn.addEventListener('click', () => {
+        if (!isCommentOn) {
+          newTdTitle.appendChild(commentInput);
+          commentBtn.innerText = '댓글 달기 취소';
+          isCommentOn = true;
+
+          // if (savedComments.length > 0) {
+          //   savedComments.forEach(comment => {
+          //     newTdTitle.appendChild(comment);
+          //   });
+          // }
+
+          //Enter 키 누르면 댓글 저장
+          commentInput.addEventListener(
+            'keydown',
+            // e => {
+            //   if (e.key === 'Enter') {
+            //     e.preventDefault();
+            //     saveComment(newTdTitle, commentInput, commentBtn);
+            //   }
+            // }
+            keyFunction
+          );
+        } else {
+          commentInput.removeEventListener('keydown', keyFunction);
+          commentBtn.innerText = '댓글 달기';
+          commentInput.remove();
+          isCommentOn = false;
+        }
+      });
+
+      function keyFunction(e) {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          saveComment(newTdTitle, commentInput, commentBtn, idx);
+        }
+      }
       // 상태 업데이트
       isContentVisible = true;
     } else {
@@ -103,10 +203,47 @@ function addContentTable(qaTitle, qaWriter, qaContent) {
 
   // 작성일에 대한 td 생성
   const tdDate = document.createElement('td');
-  const currentDate = new Date();
-  const formattedDate = currentDate.toISOString().split('T')[0];
-  tdDate.innerText = formattedDate;
+
+  // const currentDate = new Date();
+  // const formattedDate = currentDate.toISOString().split('T')[0];
+  tdDate.innerText = qaDate;
   tr.appendChild(tdDate);
+}
+
+function saveCommentToLocalstorage(idx, comment) {
+  let oldData = localStorage.getItem('object');
+  let obj = JSON.parse(oldData);
+
+  obj.forEach(o => {
+    if (o.idx == idx) {
+      if (o.commentList && o.commentList.length >= 1) {
+        o.commentList.push(comment);
+      } else {
+        o.commentList = [comment];
+      }
+    }
+  });
+
+  localStorage.setItem('object', JSON.stringify(obj));
+}
+
+function saveComment(newTdTitle, commentInput, commentBtn, idx) {
+  const comment = commentInput.value;
+
+  if (comment) {
+    // 문의 내용(newTdTitle) 아래에 댓글 내용 추가
+    const commentP = document.createElement('p');
+    const replyIcon = `<svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"/></svg>`;
+    commentP.innerHTML = replyIcon + comment;
+    commentP.classList.add('comment-text');
+    newTdTitle.appendChild(commentP);
+
+    // savedComments.push(commentP); //댓글 저장
+    saveCommentToLocalstorage(idx, comment);
+    // commentInput.remove();
+    commentBtn.remove();
+  }
+  // 댓글 없을 경우 입력 창 그대로 보여줌
 }
 
 // 입력한 내용 저장
@@ -118,11 +255,26 @@ function saveData() {
     obj = [];
   }
 
+  let maxidx = 0;
+  obj.forEach(o => {
+    if (o.idx > maxidx) maxidx = o.idx;
+  });
+  maxidx++;
+
   const qaTitle = document.querySelector('.qa-title').value;
   const qaWriter = document.querySelector('.qa-writer').value;
   const qaContent = document.querySelector('#qa-content').value;
 
-  const newObj = { title: qaTitle, writer: qaWriter, content: qaContent };
+  const currentDate = new Date();
+  const formattedDate = currentDate.toISOString().split('T')[0];
+
+  const newObj = {
+    idx: maxidx,
+    title: qaTitle,
+    writer: qaWriter,
+    content: qaContent,
+    regdate: formattedDate,
+  };
   obj.push(newObj);
   localStorage.setItem('object', JSON.stringify(obj));
 }
@@ -133,7 +285,13 @@ window.addEventListener('load', () => {
 
   if (storedData) {
     storedData.forEach(data => {
-      addContentTable(data.title, data.writer, data.content);
+      addContentTable(
+        data.idx,
+        data.title,
+        data.writer,
+        data.content,
+        data.regdate
+      );
     });
   }
 });
