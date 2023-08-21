@@ -5,6 +5,8 @@ const modal = document.querySelector('.modal-overlay');
 
 const body = document.body;
 
+// let commentFlag = false;
+
 //{title:"",cont:"", writer:"",status:"",regdate:"",reply:[]}
 //const savedContents = [];
 
@@ -228,7 +230,12 @@ function saveCommentToLocalstorage(idx, comment) {
 }
 
 function saveComment(newTdTitle, commentInput, commentBtn, idx) {
+  const commentContainer = document.querySelector('.comment-container');
   const comment = commentInput.value;
+
+  // if (commentFlag) return;
+
+  // // commentFlag = true;
 
   if (comment) {
     // 문의 내용(newTdTitle) 아래에 댓글 내용 추가
@@ -237,12 +244,17 @@ function saveComment(newTdTitle, commentInput, commentBtn, idx) {
     commentP.innerHTML = replyIcon + comment;
     commentP.classList.add('comment-text');
     newTdTitle.appendChild(commentP);
+    commentContainer.appendChild(commentInput);
 
     // savedComments.push(commentP); //댓글 저장
     saveCommentToLocalstorage(idx, comment);
     // commentInput.remove();
     commentBtn.remove();
   }
+
+  // setTimeout(() => {
+  //   // commentFlag = false;
+  // }, 1000);
   // 댓글 없을 경우 입력 창 그대로 보여줌
 }
 
