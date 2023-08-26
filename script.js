@@ -67,9 +67,10 @@ function getMaxIdx() {
   return maxidx;
 }
 
-function addCommnetList(idx, td) {
-  let oldData = localStorage.getItem('object');
-  let obj = JSON.parse(oldData);
+function addCommentList(idx, td) {
+  // let oldData = localStorage.getItem('object');
+  // let obj = JSON.parse(oldData);
+  let obj = JSON.parse(localStorage.getItem('object'));
 
   obj.forEach(o => {
     if (o.idx == idx) {
@@ -80,6 +81,26 @@ function addCommnetList(idx, td) {
           commentP.innerHTML = replyIcon + c;
           commentP.classList.add('comment-text');
           td.appendChild(commentP);
+
+          // 댓글 삭제 버튼
+          const deleteButton = document.createElement('button');
+          deleteButton.innerText = 'x';
+          commentP.appendChild(deleteButton);
+
+          deleteButton.addEventListener('click', () => {
+            const commentIndex = o.commentList.indexOf(c);
+
+            // commentList에서 comment 삭제하기
+            if (commentIndex > -1) {
+              o.commentList.splice(commentIndex, 1);
+            }
+
+            // 수정된 객체 로컬스토리지 업데이트
+            localStorage.setItem('object', JSON.stringify(obj));
+
+            // DOM에서 comment 지우기
+            commentP.remove();
+          });
         });
       }
     }
@@ -110,6 +131,7 @@ function addContentTable(idx, qaTitle, qaWriter, qaContent, qaDate) {
   // 제목에 대한 td 생성
   const tdTitle = document.createElement('td');
   tdTitle.innerText = qaTitle;
+  tdTitle.classList.add('qa-td-title');
   tr.appendChild(tdTitle);
 
   // 댓글 달기 버튼
@@ -143,7 +165,7 @@ function addContentTable(idx, qaTitle, qaWriter, qaContent, qaDate) {
       contentTr.appendChild(newTdDate);
 
       //댓글리스트
-      addCommnetList(idx, newTdTitle);
+      addCommentList(idx, newTdTitle);
 
       // 댓글 달기 버튼 보여주기
       newTdTitle.appendChild(commentBtn);
@@ -230,12 +252,7 @@ function saveCommentToLocalstorage(idx, comment) {
 }
 
 function saveComment(newTdTitle, commentInput, commentBtn, idx) {
-  const commentContainer = document.querySelector('.comment-container');
   const comment = commentInput.value;
-
-  // if (commentFlag) return;
-
-  // // commentFlag = true;
 
   if (comment) {
     // 문의 내용(newTdTitle) 아래에 댓글 내용 추가
@@ -243,8 +260,28 @@ function saveComment(newTdTitle, commentInput, commentBtn, idx) {
     const replyIcon = `<svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"/></svg>`;
     commentP.innerHTML = replyIcon + comment;
     commentP.classList.add('comment-text');
-    newTdTitle.appendChild(commentP);
-    commentContainer.appendChild(commentInput);
+
+    // textarea 앞에 댓글(p 태그) 추가
+    newTdTitle.insertBefore(commentP, commentInput);
+
+    // 댓글 삭제
+    const deleteButton = document.createElement('button');
+    deleteButton.innerText = 'x';
+    commentP.appendChild(deleteButton);
+
+    deleteButton.addEventListener('click', () => {
+      // 로컬 스토리지에서 댓글 인덱스 찾기
+      const commentIndex = obj[idx].commentList.indexOf(comment);
+
+      // 로컬 스토리지에서 댓글 삭제
+      if (commentIndex > -1) {
+        obj[idx].commentList.splice(commentIndex, 1);
+        localStorage.setItem('object', JSON.stringify(obj));
+      }
+
+      // DOM에서 댓글 삭제
+      commentP.remove();
+    });
 
     // savedComments.push(commentP); //댓글 저장
     saveCommentToLocalstorage(idx, comment);
@@ -252,10 +289,8 @@ function saveComment(newTdTitle, commentInput, commentBtn, idx) {
     commentBtn.remove();
   }
 
-  // setTimeout(() => {
-  //   // commentFlag = false;
-  // }, 1000);
-  // 댓글 없을 경우 입력 창 그대로 보여줌
+  // 댓글 입력창 비우기
+  commentInput.value = '';
 }
 
 // 입력한 내용 저장
