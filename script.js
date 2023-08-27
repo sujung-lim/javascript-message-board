@@ -92,7 +92,7 @@ function addCommentList(idx, td) {
 
             // commentList에서 comment 삭제하기
             if (commentIndex > -1) {
-              o.commentList.splice(commentIndex, 1);
+              // o.commentList.splice(commentIndex, 1);
             }
 
             // 수정된 객체 로컬스토리지 업데이트
@@ -143,6 +143,31 @@ function addContentTable(idx, qaTitle, qaWriter, qaContent, qaDate) {
   const commentInput = document.createElement('textarea');
   commentInput.placeholder = '댓글을 입력하세요';
 
+  let RefnewTdTitle;
+  function commentHandler() {
+    if (!isCommentOn) {
+      RefnewTdTitle.appendChild(commentInput);
+      commentBtn.innerText = '댓글 달기 취소';
+      isCommentOn = true;
+
+      //Enter 키 누르면 댓글 저장
+      commentInput.addEventListener('keypress', keyFunction);
+    } else {
+      commentInput.removeEventListener('keypress', keyFunction);
+      commentBtn.innerText = '댓글 달기';
+      commentInput.remove();
+      isCommentOn = false;
+    }
+  }
+  function keyFunction(e) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      e.stopPropagation();
+      saveComment(RefnewTdTitle, commentInput, commentBtn, idx);
+      return false;
+    }
+  }
+
   // 제목 클릭시 문의 내용 보여주기
   tdTitle.addEventListener('click', () => {
     if (!isContentVisible) {
@@ -169,45 +194,11 @@ function addContentTable(idx, qaTitle, qaWriter, qaContent, qaDate) {
 
       // 댓글 달기 버튼 보여주기
       newTdTitle.appendChild(commentBtn);
-
+      RefnewTdTitle = newTdTitle;
+      commentBtn.removeEventListener('click', commentHandler);
       // 댓글 달기 누르면 댓글 입력창 보여주기
-      commentBtn.addEventListener('click', () => {
-        if (!isCommentOn) {
-          newTdTitle.appendChild(commentInput);
-          commentBtn.innerText = '댓글 달기 취소';
-          isCommentOn = true;
+      commentBtn.addEventListener('click', commentHandler);
 
-          // if (savedComments.length > 0) {
-          //   savedComments.forEach(comment => {
-          //     newTdTitle.appendChild(comment);
-          //   });
-          // }
-
-          //Enter 키 누르면 댓글 저장
-          commentInput.addEventListener(
-            'keydown',
-            // e => {
-            //   if (e.key === 'Enter') {
-            //     e.preventDefault();
-            //     saveComment(newTdTitle, commentInput, commentBtn);
-            //   }
-            // }
-            keyFunction
-          );
-        } else {
-          commentInput.removeEventListener('keydown', keyFunction);
-          commentBtn.innerText = '댓글 달기';
-          commentInput.remove();
-          isCommentOn = false;
-        }
-      });
-
-      function keyFunction(e) {
-        if (e.key === 'Enter') {
-          e.preventDefault();
-          saveComment(newTdTitle, commentInput, commentBtn, idx);
-        }
-      }
       // 상태 업데이트
       isContentVisible = true;
     } else {
