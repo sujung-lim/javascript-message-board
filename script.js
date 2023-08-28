@@ -67,6 +67,13 @@ function getMaxIdx() {
   return maxidx;
 }
 
+var comment = {
+  addCommentList: function () {},
+  deletecomment: function () {},
+  addcomment: function () {},
+  id: 20,
+};
+
 function addCommentList(idx, td) {
   // let oldData = localStorage.getItem('object');
   // let obj = JSON.parse(oldData);
@@ -82,7 +89,7 @@ function addCommentList(idx, td) {
           commentP.classList.add('comment-text');
           td.appendChild(commentP);
 
-          // 댓글 삭제 버튼
+          // 답변 삭제 버튼
           const deleteButton = document.createElement('button');
           deleteButton.innerText = 'x';
           commentP.appendChild(deleteButton);
@@ -92,7 +99,7 @@ function addCommentList(idx, td) {
 
             // commentList에서 comment 삭제하기
             if (commentIndex > -1) {
-              // o.commentList.splice(commentIndex, 1);
+              o.commentList.splice(commentIndex, 1);
             }
 
             // 수정된 객체 로컬스토리지 업데이트
@@ -125,8 +132,9 @@ function addContentTable(idx, qaTitle, qaWriter, qaContent, qaDate) {
 
   // 상태 td 생성
   const tdStatus = document.createElement('td');
-  tdStatus.innerText = '답변 대기';
+  tdStatus.innerText = '답변대기';
   tr.appendChild(tdStatus);
+  tdStatus.classList.add('qa-td-status');
 
   // 제목에 대한 td 생성
   const tdTitle = document.createElement('td');
@@ -134,27 +142,27 @@ function addContentTable(idx, qaTitle, qaWriter, qaContent, qaDate) {
   tdTitle.classList.add('qa-td-title');
   tr.appendChild(tdTitle);
 
-  // 댓글 달기 버튼
+  // 답변 달기 버튼
   const commentBtn = document.createElement('button');
-  commentBtn.innerText = '댓글 달기';
+  commentBtn.innerText = '답변 달기';
   commentBtn.classList.add('comment-btn');
 
-  // 댓글 입력창
+  // 답변 입력창
   const commentInput = document.createElement('textarea');
-  commentInput.placeholder = '댓글을 입력하세요';
+  commentInput.placeholder = '답변을 입력하세요';
 
   let RefnewTdTitle;
   function commentHandler() {
     if (!isCommentOn) {
       RefnewTdTitle.appendChild(commentInput);
-      commentBtn.innerText = '댓글 달기 취소';
+      commentBtn.innerText = '답변 달기 취소';
       isCommentOn = true;
 
-      //Enter 키 누르면 댓글 저장
+      //Enter 키 누르면 답변 저장
       commentInput.addEventListener('keypress', keyFunction);
     } else {
       commentInput.removeEventListener('keypress', keyFunction);
-      commentBtn.innerText = '댓글 달기';
+      commentBtn.innerText = '답변 달기';
       commentInput.remove();
       isCommentOn = false;
     }
@@ -179,9 +187,10 @@ function addContentTable(idx, qaTitle, qaWriter, qaContent, qaDate) {
       const newTdStatus = document.createElement('td');
       contentTr.appendChild(newTdStatus);
 
-      const newTdTitle = document.createElement('td');
-      newTdTitle.innerText = qaContent;
-      contentTr.appendChild(newTdTitle);
+      const newTdContent = document.createElement('td');
+      newTdContent.innerText = qaContent;
+      newTdContent.classList.add('qa-content');
+      contentTr.appendChild(newTdContent);
 
       const newTdWriter = document.createElement('td');
       contentTr.appendChild(newTdWriter);
@@ -189,14 +198,14 @@ function addContentTable(idx, qaTitle, qaWriter, qaContent, qaDate) {
       const newTdDate = document.createElement('td');
       contentTr.appendChild(newTdDate);
 
-      //댓글리스트
-      addCommentList(idx, newTdTitle);
+      // 답변리스트
+      addCommentList(idx, newTdContent);
 
-      // 댓글 달기 버튼 보여주기
-      newTdTitle.appendChild(commentBtn);
-      RefnewTdTitle = newTdTitle;
+      // 답변 달기 버튼 보여주기
+      newTdContent.appendChild(commentBtn);
+      RefnewTdTitle = newTdContent;
       commentBtn.removeEventListener('click', commentHandler);
-      // 댓글 달기 누르면 댓글 입력창 보여주기
+      // 답변 달기 누르면 답변 입력창 보여주기
       commentBtn.addEventListener('click', commentHandler);
 
       // 상태 업데이트
@@ -225,6 +234,7 @@ function addContentTable(idx, qaTitle, qaWriter, qaContent, qaDate) {
   tr.appendChild(tdDate);
 }
 
+// 답변 내용 로컬스토리지에 저장
 function saveCommentToLocalstorage(idx, comment) {
   let oldData = localStorage.getItem('object');
   let obj = JSON.parse(oldData);
@@ -242,46 +252,88 @@ function saveCommentToLocalstorage(idx, comment) {
   localStorage.setItem('object', JSON.stringify(obj));
 }
 
-function saveComment(newTdTitle, commentInput, commentBtn, idx) {
+function saveComment(newTdContent, commentInput, commentBtn, idx) {
   const comment = commentInput.value;
 
   if (comment) {
-    // 문의 내용(newTdTitle) 아래에 댓글 내용 추가
+    // 문의 내용(newTdContent) 아래에 답변 내용 추가
     const commentP = document.createElement('p');
     const replyIcon = `<svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"/></svg>`;
     commentP.innerHTML = replyIcon + comment;
     commentP.classList.add('comment-text');
 
-    // textarea 앞에 댓글(p 태그) 추가
-    newTdTitle.insertBefore(commentP, commentInput);
+    // textarea 앞에 답변(p 태그) 추가
+    newTdContent.insertBefore(commentP, commentInput);
 
-    // 댓글 삭제
+    // 답변 삭제
     const deleteButton = document.createElement('button');
     deleteButton.innerText = 'x';
+    deleteButton.setAttribute('id-path', idx);
     commentP.appendChild(deleteButton);
 
-    deleteButton.addEventListener('click', () => {
-      // 로컬 스토리지에서 댓글 인덱스 찾기
-      const commentIndex = obj[idx].commentList.indexOf(comment);
+    deleteButton.addEventListener('click', e => {
+      // 로컬 스토리지에서 답변 인덱스 찾기
+      let idx = e.target.getAttribute('id-path');
+      deleteComment(idx, comment);
 
-      // 로컬 스토리지에서 댓글 삭제
-      if (commentIndex > -1) {
-        obj[idx].commentList.splice(commentIndex, 1);
-        localStorage.setItem('object', JSON.stringify(obj));
-      }
-
-      // DOM에서 댓글 삭제
+      // DOM에서 답변 삭제
       commentP.remove();
+
+      updateStatus();
     });
 
-    // savedComments.push(commentP); //댓글 저장
+    // savedComments.push(commentP); //답변 저장
     saveCommentToLocalstorage(idx, comment);
     // commentInput.remove();
     commentBtn.remove();
   }
 
-  // 댓글 입력창 비우기
+  // 답변 입력창 비우기
   commentInput.value = '';
+
+  updateStatus();
+}
+
+// function deleteComment(idx, comment) {
+//   let obj = getObj();
+
+//   obj.forEach(o => {
+//     if (o.idx == idx) {
+//       if (o.commentList) {
+//         o.commentList.forEach(c => {
+//           const commentIndex = o.commentList.indexOf(c);
+
+//           if (commentIndex > -1) {
+//             o.commentList.splice(commentIndex, 1);
+//             localStorage.setItem('object', JSON.stringify(obj));
+//           }
+//         });
+//       }
+//     }
+//   });
+// }
+
+function deleteComment(idx, comment) {
+  let obj = getObj();
+
+  obj.forEach(o => {
+    if (o.idx == idx) {
+      if (o.commentList) {
+        const commentIndex = o.commentList.indexOf(comment);
+
+        if (commentIndex > -1) {
+          o.commentList.splice(commentIndex, 1);
+          localStorage.setItem('object', JSON.stringify(obj));
+        }
+      }
+    }
+  });
+}
+
+function getObj() {
+  let oldData = localStorage.getItem('object');
+  let obj = JSON.parse(oldData);
+  return obj;
 }
 
 // 입력한 내용 저장
@@ -315,6 +367,30 @@ function saveData() {
   };
   obj.push(newObj);
   localStorage.setItem('object', JSON.stringify(obj));
+}
+
+// 답변 상태 업데이트
+function updateStatus() {
+  const tdStatuses = document.querySelectorAll('.qa-td-status');
+
+  tdStatuses.forEach(tdStatus => {
+    const currentTr = tdStatus.closest('tr');
+
+    const contentTr = currentTr.nextElementSibling;
+
+    if (contentTr) {
+      const commentText = contentTr.querySelector('.comment-text');
+
+      // comment-text가 있다면
+      if (commentText) {
+        tdStatus.innerText = '답변완료';
+      } else {
+        tdStatus.innerText = '미답변';
+      }
+    } else {
+      tdStatus.innerText = '미답변'; // 혹시 contentTr이 없을 경우를 대비
+    }
+  });
 }
 
 // 저장한 내용 브라우저에 유지하기
