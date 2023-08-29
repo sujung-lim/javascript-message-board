@@ -17,7 +17,7 @@
       <div class="qa-menu-container">
         <div class="qa-btn">
           <a href="#" class="open-qa-modal">상품 Q&A 작성하기</a>
-          <a href="" class="search-qa">나의 Q&A 조회 ></a>
+          <a href="" class="open-search-modal">나의 Q&A 조회 ></a>
         </div>
         <div class="qa-status">
           <label class="switch">
@@ -43,7 +43,7 @@
         <tbody class="table-body"></tbody>
       </table>
 
-      <!-- 모달 창 (기본적으로 숨김) -->
+      <!-- 상품 Q&A 작성 모달 창 (기본적으로 숨김) -->
       <div class="modal-overlay">
         <div class="qa-modal" id="qa-modal">
           <h2 class="modal-h2">상품 Q&A 작성하기</h2>
@@ -77,9 +77,17 @@
           </form>
         </div>
       </div>
-      <!-- 질문 및 답변 목록 -->
-      <div class="qa-list"></div>
-      <!-- 답변, 댓글  -->
+      <!-- 나의 Q&A 조회 모달 창 (기본적으로 숨김) -->
+      <div class="search-modal-overlay">
+        <div class="search-modal">
+          <input
+            type="text"
+            id="searchInput"
+            placeholder="작성자를 입력하세요"
+          />
+          <button class="search-btn">조회</button>
+        </div>
+      </div>
     </section>
 
     <!-- JavaScript 코드 추가 -->

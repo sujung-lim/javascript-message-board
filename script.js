@@ -5,12 +5,7 @@ const modal = document.querySelector('.modal-overlay');
 
 const body = document.body;
 
-// let commentFlag = false;
-
-//{title:"",cont:"", writer:"",status:"",regdate:"",reply:[]}
-//const savedContents = [];
-
-// 모달창 열고 닫기
+// **상품 Q&A 작성** 모달창 열고 닫기
 openModal.addEventListener('click', e => {
   e.preventDefault();
   modalOpen('open');
@@ -32,10 +27,10 @@ function modalOpen(flag) {
   else modal.style.display = 'none';
 }
 
-// 내용 입력 후 등록 버튼 누르면 값 저장
+// **상품 Q&A 작성** 내용 입력 후 등록 버튼 누르면 값 저장
 const submitBtn = document.querySelector('.submit-btn');
 
-// 문의 내용 저장
+// **상품 Q&A 작성** 문의 내용 저장
 submitBtn.addEventListener('click', e => {
   e.preventDefault();
   // 제목, 작성자, 내용 값 저장
@@ -50,6 +45,35 @@ submitBtn.addEventListener('click', e => {
   addContentTable(idx, qaTitle, qaWriter, qaContent, formattedDate);
   modalOpen('close');
 });
+
+// **나의 Q&A 조회** 모달창 열기
+const openSearchModal = document.querySelector('.open-search-modal');
+const searchModalOverlay = document.querySelector('.search-modal-overlay');
+const searchModal = document.querySelector('.search-modal');
+
+openSearchModal.addEventListener('click', e => {
+  e.preventDefault();
+  searchModalOpen('open');
+});
+
+function searchModalOpen(flag) {
+  if (flag === 'open') {
+    searchModal.style.display = 'block';
+    //배경 클릭 이벤트 리스너
+    searchModalOverlay.addEventListener('click', closeSearchModal);
+  } else {
+    searchModal.style.display = 'none';
+    //이벤트 리스너 제거
+    searchModalOverlay.removeEventListener('click', closeSearchModal);
+  }
+}
+
+// **나의 Q&A 조회** 모달창 닫기
+function closeSearchModal(e) {
+  if (e.target === searchModalOverlay) {
+    searchModalOpen('close');
+  }
+}
 
 function getMaxIdx() {
   let oldData = localStorage.getItem('object');
@@ -114,7 +138,7 @@ function addCommentList(idx, td) {
   });
 }
 
-// Q&A 작성하면 테이블 생성
+// 상품 Q&A 작성하면 테이블 생성
 function addContentTable(idx, qaTitle, qaWriter, qaContent, qaDate) {
   const qaData = {};
 
@@ -373,25 +397,58 @@ function saveData() {
 function updateStatus() {
   const tdStatuses = document.querySelectorAll('.qa-td-status');
 
+  // const currentTr = document.querySelectorAll('.qa-content-tr');
+
+  const statusStorage = {};
+
   tdStatuses.forEach(tdStatus => {
     const currentTr = tdStatus.closest('tr');
+    const statusId = currentTr.getAttribute('data-status-id');
 
     const contentTr = currentTr.nextElementSibling;
 
     if (contentTr) {
       const commentText = contentTr.querySelector('.comment-text');
+      contentTr.setAttribute('data-status-id', statusId);
+      console.log(contentTr);
 
       // comment-text가 있다면
       if (commentText) {
         tdStatus.innerText = '답변완료';
+        statusStorage[statusId] = '답변완료';
       } else {
         tdStatus.innerText = '미답변';
+        statusStorage[statusId] = '미답변';
       }
     } else {
-      tdStatus.innerText = '미답변'; // 혹시 contentTr이 없을 경우를 대비
+      tdStatus.innerText = '미답변';
+      statusStorage[statusId] = '미답변';
     }
   });
+  localStorage.setItem('statusStorage', JSON.stringify(statusStorage));
 }
+
+// 답변 상태 불러오기
+document.addEventListener('DOMContentLoaded', () => {
+  const savedStatusStorage = localStorage.getItem('statusStorage');
+
+  if (savedStatusStorage) {
+    const parsedStatusStorage = JSON.parse(savedStatusStorage);
+
+    const tdStatuses = document.querySelectorAll('.qa-td-status');
+
+    tdStatuses.forEach(tdStatus => {
+      const currentTr = tdStatus.closest('tr');
+      const statusId = currentTr.getAttribute('data-status-id');
+
+      const savedStatus = parsedStatusStorage[statusId];
+
+      if (savedStatus) {
+        tdStatus.innerText = savedStatus;
+      }
+    });
+  }
+});
 
 // 저장한 내용 브라우저에 유지하기
 window.addEventListener('load', () => {
