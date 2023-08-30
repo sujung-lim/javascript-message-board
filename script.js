@@ -1,19 +1,14 @@
 'use strict';
 
 const openModal = document.querySelector('.open-qa-modal');
-const modal = document.querySelector('.modal-overlay');
+const modalOverlay = document.querySelector('.modal-overlay');
 
 const body = document.body;
 
-// **상품 Q&A 작성** 모달창 열고 닫기
+// **상품 Q&A 작성** 모달창
 openModal.addEventListener('click', e => {
   e.preventDefault();
   modalOpen('open');
-});
-
-const closeModal = document.querySelector('.close-modal-btn');
-closeModal.addEventListener('click', () => {
-  modalOpen('close');
 });
 
 function modalOpen(flag) {
@@ -23,8 +18,15 @@ function modalOpen(flag) {
   qaTitle.value = '';
   qaWriter.value = '';
   qaContent.value = '';
-  if (flag == 'open') modal.style.display = 'block';
-  else modal.style.display = 'none';
+  if (flag == 'open') {
+    modalOverlay.style.display = 'block';
+    // 배경 클릭 이벤트 리스너
+    modalOverlay.addEventListener('click', closeModal);
+  } else {
+    modalOverlay.style.display = 'none';
+    // 배경 클릭 이벤트 리스너 제거
+    modalOverlay.removeEventListener('click', closeModal);
+  }
 }
 
 // **상품 Q&A 작성** 내용 입력 후 등록 버튼 누르면 값 저장
@@ -32,11 +34,43 @@ const submitBtn = document.querySelector('.submit-btn');
 
 // **상품 Q&A 작성** 문의 내용 저장
 submitBtn.addEventListener('click', e => {
-  e.preventDefault();
   // 제목, 작성자, 내용 값 저장
-  const qaTitle = document.querySelector('.qa-title').value;
-  const qaWriter = document.querySelector('.qa-writer').value;
-  const qaContent = document.querySelector('#qa-content').value;
+  const qaTitleElement = document.querySelector('.qa-title');
+  const qaWriterElement = document.querySelector('.qa-writer');
+  const qaContentElement = document.querySelector('#qa-content');
+
+  const qaTitle = qaTitleElement.value;
+  const qaWriter = qaWriterElement.value;
+  const qaContent = qaContentElement.value;
+
+  // 제목, 작성자, 내용 값 유효성 검사
+  let isValid = true;
+
+  if (!qaTitle) {
+    qaTitleElement.classList.add('input-invalid');
+    isValid = false;
+  } else {
+    qaTitleElement.classList.remove('input-invalid');
+  }
+
+  if (!qaWriter) {
+    qaWriterElement.classList.add('input-invalid');
+    isValid = false;
+  } else {
+    qaWriterElement.classList.remove('input-invalid');
+  }
+
+  if (!qaContent) {
+    qaContentElement.classList.add('input-invalid');
+    isValid = false;
+  } else {
+    qaContentElement.classList.remove('input-invalid');
+  }
+
+  if (!isValid) {
+    e.preventDefault();
+    return;
+  }
 
   saveData();
   let idx = getMaxIdx();
@@ -45,6 +79,22 @@ submitBtn.addEventListener('click', e => {
   addContentTable(idx, qaTitle, qaWriter, qaContent, formattedDate);
   modalOpen('close');
 });
+
+const closeModalBtn = document.querySelector('.close-modal-btn');
+closeModalBtn.addEventListener('click', () => {
+  modalOpen('close');
+});
+
+function closeModal(e) {
+  if (e.target === modalOverlay) {
+    modalOpen('close');
+
+    // 초기 상태로 돌리기 위해 input-invalid 클래스 제거
+    document.querySelector('.qa-title').classList.remove('input-invalid');
+    document.querySelector('.qa-writer').classList.remove('input-invalid');
+    document.querySelector('#qa-content').classList.remove('input-invalid');
+  }
+}
 
 // **나의 Q&A 조회** 모달창 열기
 const openSearchModal = document.querySelector('.open-search-modal');
@@ -58,12 +108,14 @@ openSearchModal.addEventListener('click', e => {
 
 function searchModalOpen(flag) {
   if (flag === 'open') {
+    searchModalOverlay.style.display = 'flex';
     searchModal.style.display = 'block';
     //배경 클릭 이벤트 리스너
     searchModalOverlay.addEventListener('click', closeSearchModal);
   } else {
+    searchModalOverlay.style.display = 'none';
     searchModal.style.display = 'none';
-    //이벤트 리스너 제거
+    //배경 클릭 이벤트 리스너 제거
     searchModalOverlay.removeEventListener('click', closeSearchModal);
   }
 }

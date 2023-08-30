@@ -267,6 +267,15 @@ table {
   border: none;
 }
 
+/* 입력 값이 없을 때 (유효성 검사) */
+.input-invalid {
+  border: 2px solid red;
+}
+
+#qa-content.input-invalid {
+  border: 2px solid red;
+}
+
 /* 나의 Q&A 조회 모달 창 */
 .search-modal-overlay {
   position: fixed;
@@ -276,15 +285,45 @@ table {
   left: 50%;
   transform: translate(-50%, -50%);
   background-color: rgba(0, 0, 0, 0.8); /* 뒷 배경 어둡게 */
-  display: none; /* 기본적으로 노출되지 않도록 설정 */
   z-index: 1000; /* 기타 요소 위로 올리기 */
   justify-content: center;
   align-items: center;
+  display: none;
+}
+
+.search-modal {
+  display: none;
+  width: 600px;
+  background-color: #fff;
+  padding: 30px;
+}
+
+.search-modal h2 {
+  padding: 15px 30px;
+  color: #fff;
+  background-color: #353b4c;
+  font-weight: normal;
+}
+
+.search-input-container {
+  margin: 20px;
   display: flex;
+  justify-content: space-between;
+}
+
+#searchInput,
+.search-btn {
+  height: 40px;
+  box-sizing: border-box;
+}
+
+#searchInput {
+  width: 70%;
 }
 
 .search-btn {
   border: 1px solid #c3c3c3;
-  background-color: #fff;
-  color: #000;
+  background-color: var(--main-color);
+  color: #fff;
+  width: 20%;
 }
